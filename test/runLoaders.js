@@ -709,4 +709,16 @@ describe("runLoaders", function() {
 			});
 		});
 	});
+	it("should resolve references to loaders", function(done) {
+		var simpleLoaderPath = path.resolve(fixtures, "simple-loader.js");
+		runLoaders({
+			resource: path.resolve(fixtures, "resource.bin"),
+			resolveLoader: (request, callback) => callback(null, request === "simple-loader" ? simpleLoaderPath : request),
+			loaders: ["simple-loader"],
+		}, function(err, result) {
+			if(err) return done(err);
+			result.result.should.be.eql(["resource-simple"]);
+			done();
+		});
+	});
 });
